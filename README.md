@@ -11,6 +11,7 @@ Fetch the required `flaschen-taschen` and `rpi-rgb-led-matrix` repo submodules:
 Create a virtual environment, and install dependencies:
 
     python -m venv ./venv
+    source ./venv/bin/activate
     poetry install # or 'pip install .'
 
 Build the `flaschen-taschen` server component:
