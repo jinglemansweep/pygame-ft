@@ -18,7 +18,7 @@ PANEL_SIZE = (64, 64)
 DISPLAY_LAYOUT = (4, 2)
 DISPLAY_SIZE = (PANEL_SIZE[0] * DISPLAY_LAYOUT[0], PANEL_SIZE[1] * DISPLAY_LAYOUT[1])
 
-PYGAME_FPS = 120
+PYGAME_FPS = 90
 PYGAME_SCREEN_DEPTH = 16
 
 _APP_NAME = "pygameft-demo"
@@ -58,7 +58,6 @@ class Square(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect[0] = x
         self.rect[1] = y
-        print(f"index={self.index}")
 
     def update(self, frame):
         self.image = pygame.Surface([self.width, self.height])
