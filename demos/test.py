@@ -1,29 +1,20 @@
-import pygameft
-
 import logging
 import math
-import os
 import pygame
 import pygame.pkgdata
+import pygameft
 import random
 import sys
 import time
-import uuid
 from argparse import ArgumentParser
 from pygame.locals import QUIT, RESIZABLE, SCALED
-
-
-sys.path.append(
-    os.path.abspath(
-        os.path.dirname(__file__) + "/../lib/rpi-rgb-led-matrix/bindings/python"
-    )
-)
 
 PANEL_SIZE = (64, 64)
 DISPLAY_LAYOUT = (8, 1)
 DISPLAY_SIZE = (PANEL_SIZE[0] * DISPLAY_LAYOUT[0], PANEL_SIZE[1] * DISPLAY_LAYOUT[1])
 
 PYGAME_FPS = 120
+PYGAME_SCREEN_DEPTH = 16
 
 _APP_NAME = "pygameft-demo"
 _APP_DESCRIPTION = "PyGame Flaschen Taschen Demo"
@@ -31,10 +22,10 @@ _APP_VERSION = "0.0.1"
 
 parser = ArgumentParser(description=f"{_APP_DESCRIPTION} v{_APP_VERSION}")
 parser.add_argument("-v", "--verbose", action="store_true")
-
 args = parser.parse_args()
+
+logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
 logger = logging.getLogger("main")
-logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -43,9 +34,9 @@ font_tiny = pygame.font.SysFont("", 16)
 # pygame.event.set_allowed([QUIT])
 pygame.display.set_caption(_APP_DESCRIPTION)
 screen_flags = RESIZABLE | SCALED
-screen = pygame.display.set_mode(DISPLAY_SIZE, screen_flags, 16)
+screen = pygame.display.set_mode(DISPLAY_SIZE, screen_flags, PYGAME_SCREEN_DEPTH)
 
-logger.info(f"RGB Matrix")
+logger.info(f"{_APP_DESCRIPTION} v{_APP_VERSION}")
 logger.info(f"Panel Dimensions:     {PANEL_SIZE[0]}px x {PANEL_SIZE[1]}px")
 logger.info(f"Display Dimensions:   {DISPLAY_SIZE[0]}px x {DISPLAY_SIZE[1]}px")
 logger.info(f"Display Layout:       {DISPLAY_LAYOUT[0]} x {DISPLAY_LAYOUT[1]} (panels)")
@@ -100,13 +91,9 @@ def random_color():
 
 
 def run():
-
     frame = 0
-
-    px = 0
-    py = 0
-
     sprites_panels = pygame.sprite.Group()
+    px = py = 0
 
     for pi in range(0, DISPLAY_LAYOUT[0] * DISPLAY_LAYOUT[1]):
         for pc in range(0, DISPLAY_LAYOUT[0]):
@@ -120,7 +107,7 @@ def run():
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == QUIT:
                 sys.exit()
         screen.fill((0, 0, 0))
         sprites_panels.update(frame)
