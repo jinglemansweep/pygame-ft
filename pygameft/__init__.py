@@ -43,9 +43,6 @@ class FTClient:
                 tx = 0
                 ty += self.tile_height
 
-            logger.debug(f"UDP Send Tile: #{ti}: {tx},{ty}")
-            # slice = pixel_array[tx : tx + self.tile_width, ty : ty + self.tile_height]
-
             slice = pixel_array[ty : ty + self.tile_height, tx : tx + self.tile_width]
             self.client.send_array(slice, (tx, ty, layer))
 

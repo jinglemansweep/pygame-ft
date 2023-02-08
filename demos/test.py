@@ -11,14 +11,14 @@ from pygame.locals import QUIT, RESIZABLE, SCALED
 from pygameft import FTClient
 
 ft = FTClient(
-    "rgbmatrix.home.ptre.es", width=256, height=256, tile_width=64, tile_height=64
+    "rgbmatrix.home.ptre.es", width=256, height=256, tile_width=128, tile_height=64
 )
 
 PANEL_SIZE = (64, 64)
 DISPLAY_LAYOUT = (4, 2)
 DISPLAY_SIZE = (PANEL_SIZE[0] * DISPLAY_LAYOUT[0], PANEL_SIZE[1] * DISPLAY_LAYOUT[1])
 
-PYGAME_FPS = 90
+PYGAME_FPS = 100
 PYGAME_SCREEN_DEPTH = 16
 
 _APP_NAME = "pygameft-demo"
