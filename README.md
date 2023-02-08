@@ -23,3 +23,23 @@ Optionally, build the Python bindings for `rpi-rgb-led-matrix`:
 
     cd ./lib/flaschen-taschen/server/rgb-matrix
     make build-python
+
+Install the example `systemd` service definition:
+
+    cp ./etc/systemd/system/ft-server.service /etc/systemd/system/
+    systemctl daemon-reload
+
+Configure the project by either creating a `.env` file (see [`.env.example`](./.env.example) for details):
+
+    cp ./.env.example ./.env
+    ${EDITOR} ./.env
+
+Alternatively, copy and modify the provided `systemd` defaults environment file:
+
+    cp ./etc/default/ft-server /etc/default/
+
+Start and optionally enable the server on boot:
+
+    systemctl start ft-server
+    systemctl enable ft-server
+

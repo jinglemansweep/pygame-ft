@@ -1,0 +1,14 @@
+[Unit]
+Description=Flaschen Taschen Server
+
+[Service]
+WorkingDirectory=/opt/pygame-ft
+ExecStart=/opt/pygame-ft/bin/start-ft-server.sh
+Restart=always
+EnvironmentFile=-/etc/default/%p
+Type=simple
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=default.target
