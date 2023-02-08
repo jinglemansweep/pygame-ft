@@ -15,10 +15,15 @@ declare -r led_chain="${LED_CHAIN:-1}"
 declare -r led_parallel="${LED_PARALLEL:-1}"
 declare -r led_slowdown_gpio="${LED_SLOWDOWN_GPIO:-0}"
 declare -r led_show_refresh="${LED_SHOW_REFRESH}"
+declare -r led_limit_refresh="${LED_LIMIT_REFRESH}"
 declare led_extra_args=""
 
 if [ "${LED_SHOW_REFRESH}" == "true" ]; then
   led_extra_args="${led_extra_args} --led-show-refresh"
+fi
+
+if [ "${LED_LIMIT_REFRESH}" != "" ]; then
+  led_extra_args="${led_extra_args} --led-limit-refresh=${LED_LIMIT_REFRESH}"
 fi
 
 echo
