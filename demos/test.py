@@ -2,15 +2,20 @@ import logging
 import math
 import pygame
 import pygame.pkgdata
-import pygameft
 import random
 import sys
 import time
 from argparse import ArgumentParser
 from pygame.locals import QUIT, RESIZABLE, SCALED
 
+from pygameft import FTClient
+
+ft = FTClient(
+    "rgbmatrix.home.ptre.es", width=256, height=256, tile_width=64, tile_height=64
+)
+
 PANEL_SIZE = (64, 64)
-DISPLAY_LAYOUT = (8, 1)
+DISPLAY_LAYOUT = (4, 2)
 DISPLAY_SIZE = (PANEL_SIZE[0] * DISPLAY_LAYOUT[0], PANEL_SIZE[1] * DISPLAY_LAYOUT[1])
 
 PYGAME_FPS = 120
@@ -29,7 +34,7 @@ logger = logging.getLogger("main")
 
 pygame.init()
 clock = pygame.time.Clock()
-font_large = pygame.font.SysFont("", 96)
+font_large = pygame.font.SysFont("", 64)
 font_tiny = pygame.font.SysFont("", 16)
 # pygame.event.set_allowed([QUIT])
 pygame.display.set_caption(_APP_DESCRIPTION)
@@ -53,6 +58,7 @@ class Square(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect[0] = x
         self.rect[1] = y
+        print(f"index={self.index}")
 
     def update(self, frame):
         self.image = pygame.Surface([self.width, self.height])
@@ -82,9 +88,6 @@ class Square(pygame.sprite.Sprite):
             (text_index_offset[0], text_index_offset[1]),
         )
 
-    def _build_label(self, index):
-        return f"{index}"
-
 
 def random_color():
     return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -96,14 +99,14 @@ def run():
     px = py = 0
 
     for pi in range(0, DISPLAY_LAYOUT[0] * DISPLAY_LAYOUT[1]):
-        for pc in range(0, DISPLAY_LAYOUT[0]):
-            sprites_panels.add(
-                Square(px, py, index=pc, width=PANEL_SIZE[0], height=PANEL_SIZE[1])
-            )
-            px += PANEL_SIZE[0]
-            if px >= PANEL_SIZE[0] * DISPLAY_LAYOUT[0]:
-                px = 0
-                py += PANEL_SIZE[1]
+
+        sprites_panels.add(
+            Square(px, py, index=pi, width=PANEL_SIZE[0], height=PANEL_SIZE[1])
+        )
+        px += PANEL_SIZE[0]
+        if px >= PANEL_SIZE[0] * DISPLAY_LAYOUT[0]:
+            px = 0
+            py += PANEL_SIZE[1]
 
     while True:
         for event in pygame.event.get():
@@ -113,6 +116,7 @@ def run():
         sprites_panels.update(frame)
         sprites_panels.draw(screen)
         # render_led_matrix(screen, matrix)
+        ft.send_surface(screen)
         pygame.display.flip()
         clock.tick(PYGAME_FPS)
         frame += 1
