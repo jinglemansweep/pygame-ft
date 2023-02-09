@@ -46,7 +46,7 @@ The following diagram illustrates a 4x2 panel arrangement of 64x64 RGB matrix pa
     |              |              |              |              |
     |              |              |              |              |
     |              |              |              |              |
-    |      (64,64) |              |              |              |
+    |              |              |              |              |
     +--------------+--------------+--------------+--------------+ dy: 128
     
 
