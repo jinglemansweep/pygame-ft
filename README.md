@@ -65,7 +65,7 @@ Create a virtual environment, and install dependencies:
 Build the `flaschen-taschen` server component:
 
     cd ./lib/flaschen-taschen/server
-    make FT_BACKEND=rgb-matrix # or "terminal"
+    make FT_BACKEND=rgb-matrix
 
 Optionally, build the Python bindings for `rpi-rgb-led-matrix`:
 
