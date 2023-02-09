@@ -32,9 +32,8 @@ class FTClient:
 
     def send_surface(self, surface, layer=None):
         layer = layer or self.layer
-        surface = pygame.transform.rotate(surface, 90)
-        surface = pygame.transform.flip(surface, False, True)
         pixel_array = pygame.surfarray.pixels3d(surface)
+        pixel_array = np.rot90(np.fliplr(pixel_array), 1)
         ti = tx = ty = 0
         for ti in range(
             0, (self.width // self.tile_width) * (self.height // self.tile_height)

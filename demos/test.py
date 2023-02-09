@@ -27,14 +27,20 @@ parser.add_argument("-H", "--host", required=True, help="Flaschen-Taschen Host")
 parser.add_argument(
     "-p", "--port", type=int, default=1337, help="Flaschen-Taschen Port"
 )
-
+parser.add_argument("-l", "--layer", type=int, default=5, help="Flaschen-Taschen Layer")
 args = parser.parse_args()
 
 logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
 logger = logging.getLogger("main")
 
 ft = FTClient(
-    "rgbmatrix.home.ptre.es", width=256, height=256, tile_width=128, tile_height=64
+    host=args.host,
+    port=args.port,
+    width=256,
+    height=256,
+    tile_width=128,
+    tile_height=64,
+    layer=args.layer,
 )
 
 pygame.init()
