@@ -71,19 +71,20 @@ class Train(pygame.sprite.Sprite):
         self.direction = 1
         self.velocity = [0.0, 0.0]
         self.accel = [0.0, 0.0]
-        self.accel_amount = 0.001
+        self.accel_amount = 1.005
         self.moving = False
-        self.velocity_max = [64.0, 5.0]
-        self.friction = 0.99
+        self.velocity_max = [128.0, 5.0]
+        self.friction = 0.995
 
     def update(self, frame):
         if frame % 1000 == 0 and int(self.velocity[0]) == 0:
             self.direction = random.choice([-1, 1])
             logger.info(f"moving direction={self.direction}")
+            self.accel[0] = 0.001
             self.moving = True
 
         if self.moving:
-            self.accel[0] += self.accel_amount
+            self.accel[0] *= self.accel_amount
         else:
             self.accel[0] = 0
 
@@ -115,8 +116,8 @@ def run():
         screen.fill((0, 0, 0))
         if train.x > DISPLAY_SIZE[0]:
             train.x = 0 - train.rect.width
-        if train.x < 0 - DISPLAY_SIZE[0]:
-            train.x = train.rect.width
+        if train.x < 0 - train.rect.width:
+            train.x = DISPLAY_SIZE[0]
         sprite_group.update(frame)
         sprite_group.draw(screen)
         ft.send_surface(
