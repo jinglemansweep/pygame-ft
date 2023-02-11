@@ -12,11 +12,11 @@ from pygame.locals import QUIT, RESIZABLE, SCALED
 from pygameft import FTClient
 
 PANEL_SIZE = (64, 64)
-PANEL_LAYOUT = (4, 2)
-DISPLAY_LAYOUT = (8, 1)
+PANEL_LAYOUT = (4, 3)
+DISPLAY_LAYOUT = (12, 1)
 DISPLAY_SIZE = (PANEL_SIZE[0] * DISPLAY_LAYOUT[0], PANEL_SIZE[1] * DISPLAY_LAYOUT[1])
 
-PYGAME_FPS = 100
+PYGAME_FPS = 50
 PYGAME_SCREEN_DEPTH = 16
 
 _APP_NAME = "pygameft-demo-train"
@@ -40,7 +40,7 @@ ft = FTClient(
     port=args.port,
     width=PANEL_SIZE[0] * PANEL_LAYOUT[0],
     height=PANEL_SIZE[1] * PANEL_LAYOUT[1],
-    tile_width=PANEL_SIZE[0],
+    tile_width=PANEL_SIZE[0] * 4,
     tile_height=PANEL_SIZE[1],
     layer=args.layer,
 )
@@ -60,30 +60,6 @@ logger.info(f"Display Dimensions:   {DISPLAY_SIZE[0]}px x {DISPLAY_SIZE[1]}px")
 logger.info(f"Display Layout:       {DISPLAY_LAYOUT[0]} x {DISPLAY_LAYOUT[1]} (panels)")
 
 
-def parallelise_surface(surface):
-    temp_surface = pygame.Surface(
-        (PANEL_SIZE[0] * PANEL_LAYOUT[0], PANEL_SIZE[1] * PANEL_LAYOUT[1]),
-    )
-    # Blit first 4 panels to top row
-    temp_surface.blit(
-        surface,
-        (0, 0),
-        (0, 0, PANEL_SIZE[0] * PANEL_LAYOUT[0], PANEL_SIZE[1] * 1),
-    )
-    # Blit next 4 panels to next row
-    temp_surface.blit(
-        surface,
-        (0, PANEL_SIZE[1] * 1),
-        (
-            PANEL_SIZE[0] * PANEL_LAYOUT[0],
-            0,
-            PANEL_SIZE[0] * PANEL_LAYOUT[0],
-            PANEL_SIZE[1],
-        ),
-    )
-    return temp_surface
-
-
 class Train(pygame.sprite.Sprite):
     def __init__(self, position):
         super().__init__()
@@ -92,13 +68,29 @@ class Train(pygame.sprite.Sprite):
         ).convert_alpha()
         self.rect = self.image.get_rect()
         self.x, self.y = float(position[0]), float(position[1])
+        self.velocity = [0.0, 0.0]
+        self.accel = [0.0, 0.0]
+        self.moving = False
+        self.velocity_max = [8.0, 5.0]
+        self.friction = 0.99
 
     def update(self, frame):
-        self.x += -1 + (random.random() * 2)
-        if frame % 100 == 0:
-            self.y -= 1
-        if frame % 100 == 10:
-            self.y += 1
+        if frame % 1500 == 499:
+            self.moving = True
+
+        if self.moving:
+            self.accel[0] += 0.0001
+        else:
+            self.accel[0] = 0
+
+        self.velocity[0] += self.accel[0]
+        if self.velocity[0] > self.velocity_max[0]:
+            self.velocity[0] = self.velocity_max[0]
+        self.velocity[0] *= self.friction
+        self.x += self.velocity[0]
+        if self.x > self.rect.width * 2:
+            self.x = 0 - self.rect.width
+            self.moving = False
         self.rect.x, self.rect.y = int(self.x), int(self.y)
 
 
@@ -119,8 +111,9 @@ def run():
         screen.fill((0, 0, 0))
         sprite_group.update(frame)
         sprite_group.draw(screen)
-        # render_led_matrix(screen, matrix)
-        ft.send_surface(parallelise_surface(screen))
+        ft.send_surface(
+            screen,
+        )
         pygame.display.flip()
         clock.tick(PYGAME_FPS)
         frame += 1
