@@ -13,26 +13,29 @@ class FTClient:
         self,
         host="localhost",
         port=1337,
-        width=64,
-        height=64,
+        position=(0, 0),
+        size=(64, 64),
         layer=5,
         transparent=True,
-        tile_width=64,
-        tile_height=64,
+        tile_size=(64, 64),
     ):
         self.host = host
         self.port = port
-        self.width = width
-        self.height = height
+        self.position = position
+        self.size = size
         self.layer = layer
         self.transparent = transparent
-        self.tile_width = tile_width
-        self.tile_height = tile_height
+        self.tile_size = tile_size
         logger.info(
-            f"{_NAME}: host={host} port={port} width={width} height={height} layer={layer} transparent={transparent} tile_width={tile_width} tile_height={tile_height}"
+            f"{_NAME}: host={host} port={port} position={position} size={size} layer={layer} transparent={transparent} tile_size={tile_size}"
         )
         self.client = Flaschen(
-            self.host, self.port, self.width, self.height, self.layer, self.transparent
+            self.host,
+            self.port,
+            self.size[0],
+            self.size[1],
+            self.layer,
+            self.transparent,
         )
 
     def send_surface(self, surface, wrap=True, layer=None):
@@ -48,25 +51,25 @@ class FTClient:
             if tx >= self.width:
                 tx = 0
                 ty += self.tile_height
-
             slice = pixel_array[ty : ty + self.tile_height, tx : tx + self.tile_width]
-            self.client.send_array(slice, (tx, ty, layer))
-
+            self.client.send_array(
+                slice, (self.position[0] + tx, self.position[1] + ty, layer)
+            )
             tx += self.tile_width
 
     def wrap_surface(self, surface):
-        temp_surface = pygame.Surface((self.width, self.height))
-        x_tiles = self.width // self.tile_width
-        y_tiles = self.height // self.tile_height
+        temp_surface = pygame.Surface(self.size)
+        x_tiles = self.size[0] // self.tile_size[0]
+        y_tiles = self.size[1] // self.tile_size[1]
 
         row = 0
         while row <= y_tiles:
-            y = row * self.tile_height
-            x = self.tile_width * (x_tiles * row)
+            y = row * self.tile_size[1]
+            x = self.tile_size[0] * (x_tiles * row)
             temp_surface.blit(
                 surface,
                 (0, y),
-                (x, 0, self.tile_width * x_tiles, self.tile_height * 1),
+                (x, 0, self.tile_size[0] * x_tiles, self.tile_size[1] * 1),
             )
             row += 1
         return temp_surface
