@@ -46,16 +46,18 @@ class FTClient:
         pixel_array = np.rot90(np.fliplr(pixel_array), 1)
         ti = tx = ty = 0
         for ti in range(
-            0, (self.width // self.tile_width) * (self.height // self.tile_height)
+            0, (self.size[0] // self.tile_size[0]) * (self.size[1] // self.tile_size[1])
         ):
-            if tx >= self.width:
+            if tx >= self.size[0]:
                 tx = 0
-                ty += self.tile_height
-            slice = pixel_array[ty : ty + self.tile_height, tx : tx + self.tile_width]
+                ty += self.tile_size[1]
+            slice = pixel_array[
+                ty : ty + self.tile_size[1], tx : tx + self.tile_size[0]
+            ]
             self.client.send_array(
                 slice, (self.position[0] + tx, self.position[1] + ty, layer)
             )
-            tx += self.tile_width
+            tx += self.tile_size[0]
 
     def wrap_surface(self, surface):
         temp_surface = pygame.Surface(self.size)
