@@ -18,6 +18,7 @@ class FTClient:
         layer=5,
         transparent=True,
         tile_size=(64, 64),
+        debug=False,
     ):
         self.host = host
         self.port = port
@@ -26,9 +27,11 @@ class FTClient:
         self.layer = layer
         self.transparent = transparent
         self.tile_size = tile_size
-        logger.info(
-            f"{_NAME}: host={host} port={port} position={position} size={size} layer={layer} transparent={transparent} tile_size={tile_size}"
-        )
+        self.debug = debug
+        if self.debug:
+            logger.debug(
+                f"{_NAME}: host={host} port={port} position={position} size={size} layer={layer} transparent={transparent} tile_size={tile_size} debug={debug}"
+            )
         self.client = Flaschen(
             self.host,
             self.port,
